@@ -2,12 +2,14 @@ package posApp;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -15,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
 public class POS_pos extends JPanel implements ActionListener{
 
 	//ItemDAO 객체 생성(dao) 및 로드
-	ItemDAO dao;
+	ItemDAO dao = ItemDAO.getInstance();
 
 	//패널에 삽입될 컴포넌트들
 	JLabel labelItemName;//2
@@ -25,7 +27,7 @@ public class POS_pos extends JPanel implements ActionListener{
 	JButton buttonItemAdd;//8
 	JButton buttonPay;//9
 	JButton buttonCancer;//a
-	JTable jTableBasket;//b
+	static JTable jTableBasket;//b
 	JLabel labelTotal;//6
 	JTextField jTextFieldTotal;//7
 	JButton buttonRefresh;//1
@@ -41,6 +43,21 @@ public class POS_pos extends JPanel implements ActionListener{
 	
 	//멤버 변수들의 초기화 - 생성자 메소드
 	public POS_pos() {
+		
+		//테이블에 열 이름 넣기
+		tableModel = new DefaultTableModel();
+		tableModel.addColumn("ID");
+		tableModel.addColumn("상품명");
+		tableModel.addColumn("재고량");
+		tableModel.addColumn("단가");
+		jTableBasket = new JTable(tableModel);//테이블의 형태로 데이터 출력 뷰(데이터 필요)
+		JScrollPane jtable = new JScrollPane(jTableBasket);
+		
+		
+		comboModel = new DefaultComboBoxModel(makeInVector());
+		
+		
+		comboBoxItem = new JComboBox(comboModel);
 		
 		setLayout(null);
 		
@@ -61,7 +78,7 @@ public class POS_pos extends JPanel implements ActionListener{
 		labelItemStock.setLocation(20, 140);
 		labelItemStock.setSize(100, 30);
 		
-		comboBoxItem = new JComboBox();//3
+//		comboBoxItem = new JComboBox();//3
 		comboBoxItem.setLocation(70, 90);
 		comboBoxItem.setSize(200, 30);
 		
@@ -85,7 +102,7 @@ public class POS_pos extends JPanel implements ActionListener{
 		buttonCancer.setLocation(410, 250);
 		buttonCancer.setSize(100, 40);
 		
-		jTableBasket = new JTable();//b
+//		jTableBasket = new JTable();//b
 		jTableBasket.setLocation(300, 20);
 		jTableBasket.setSize(210, 210);
 		
@@ -112,13 +129,22 @@ public class POS_pos extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		
+		tableModel = (DefaultTableModel)jTableBasket.getModel();
+		
+		Object buttonObject = e.getSource();
+		//제품 불러오기
+		if(buttonObject == buttonRefresh) {
+			//
+		}
 	}
 	
-//	public Vector<String[]> makeInVector() {
-//		return;
-//	}
+	public Vector<String[]> makeInVector() {
+		Vector<String[]> list = new Vector<String[]>();
+		
+		return list;
+	}
 //	
-//	public void clear() {
+//	public void clean() {
 //		
 //	}
 //	
