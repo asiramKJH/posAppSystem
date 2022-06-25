@@ -2,12 +2,15 @@ package posApp;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -134,7 +137,48 @@ public class POS_pos extends JPanel implements ActionListener{
 		Object buttonObject = e.getSource();
 		//제품 불러오기
 		if(buttonObject == buttonRefresh) {
-			//
+			//JComboBox 객체가 가지고 있는 모든 데이터 삭제
+			comboModel.removeAllElements();
+			
+			//ItemDAO 클래스의 getItem() 메소드를 활용하여 상품명 전체 검색하여 Vector에 저장
+			Vector<String> allItemNames = new Vector<String>();
+			allItemNames = dao.getItem();
+			
+			//Vector에 저장한 상품명을 comboBox에 추가
+			comboModel.addAll(allItemNames);
+		
+		//추가
+		}else if(buttonObject == buttonItemAdd){
+			//JComboBox객체로부터 사용자가 선택한 상품명과 텍스트 필드 입력 수량 저장
+			String selectedName = String.valueOf(comboBoxItem.getSelectedItem());
+			int inputCount = Integer.parseInt(jTextFieldStock.getText());
+			int selectPrice = 0;
+			
+			//DB로부터 사용자가 선택한 상품명의 단가 불러오기
+			try {
+				selectPrice = Integer.parseInt(dao.getPrice(selectedName));
+			} catch (NumberFormatException | SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			//사용자가 선택한 상품명의 구매가격(단가*수량)과 누적 총액 연산하여 저장
+			int accumulatedPrice = inputCount * selectPrice;
+			
+			//상품명, 구매수량, 구매가격, 누적총액을 Vector에 저장
+			Vector<String> tableInputRecord = new Vector<String>();
+			
+			tableInputRecord.add(0, selectedName);
+			tableInputRecord.add(1, String.valueOf(inputCount));
+			tableInputRecord.add(2, String.valueOf(selectPrice));
+			tableInputRecord.add(3, String.valueOf(accumulatedPrice));
+			
+			//Vector 객체를 JTable의 Model 객체에 추가
+			tableModel.addRow(tableInputRecord);
+		
+		//결제
+		}else if(buttonObject == buttonPay) {
+//			JOptionPane.showConfirmDialog(parentComponent, message);
 		}
 	}
 	
